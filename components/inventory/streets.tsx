@@ -56,7 +56,7 @@ function StreetRegistration({ onClose }: { onClose: () => void }) {
       const data = (await response.json()) as { error?: string };
       if (!response.ok)
         throw new Error(data.error || "Não foi possível cadastrar a rua.");
-      setSuccess(`Rua ${parsed.data.name} cadastrada com sucesso.`);
+      setSuccess(`${parsed.data.name} cadastrada com sucesso.`);
       setName("");
       setFloor("");
       await reload();

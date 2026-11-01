@@ -4,7 +4,11 @@ export type Product = {
   barcode: string;
   gemco: string;
 };
-export type Balance = { location: string; quantity: number };
+export type Balance = {
+  location: string;
+  quantity: number;
+  floor?: string | null;
+};
 export type ProductResult = {
   product: Product | null;
   balances: Balance[];
@@ -22,10 +26,11 @@ export type Operation = {
   destination?: string;
   reason?: string;
 };
-export function locationLabel(location: string) {
+export function locationLabel(location: string, floor?: string | null) {
   if (location === "mostruario") return "Mostruário";
   if (location === "salao") return "Salão de Vendas";
-  return `Estoque · Rua ${location.replace(/^estoque:/, "")}`;
+  const name = location.replace(/^estoque:/, "");
+  return `Estoque · ${/^RUA(?:\s|$)/i.test(name) ? name : `Rua ${name}`}${floor ? ` · ${floor}` : ""}`;
 }
 export function locationKey(destination: Destination, street: string) {
   return destination === "estoque"

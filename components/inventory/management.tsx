@@ -215,7 +215,7 @@ export function Management({
                   <div className="product-card-bottom">
                     <div className="location-badge">
                       <MapPin size={15} />
-                      {locationLabel(balance.location)}
+                      {locationLabel(balance.location, balance.floor)}
                     </div>
                     <div className="product-actions">
                       <button

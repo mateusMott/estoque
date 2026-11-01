@@ -15,7 +15,7 @@ export async function findProduct(code: string): Promise<Product | null> {
 export async function productBalances(id: string) {
   const { results } = await database()
     .prepare(
-      "SELECT location, quantity FROM balances WHERE product_id = ? AND quantity > 0 ORDER BY CASE WHEN location = 'mostruario' THEN 0 WHEN location = 'salao' THEN 1 ELSE 2 END, location",
+      "SELECT b.location, b.quantity, s.floor FROM balances b LEFT JOIN streets s ON b.location = 'estoque:' || s.name WHERE b.product_id = ? AND b.quantity > 0 ORDER BY CASE WHEN b.location = 'mostruario' THEN 0 WHEN b.location = 'salao' THEN 1 ELSE 2 END, b.location",
     )
     .bind(id)
     .all<Balance>();
