@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Magazine | Controle de estoque",
+  title: "Estoque | Controle de estoque",
   description:
     "Organize a entrada, a localização e a movimentação dos produtos da sua loja.",
   icons: {

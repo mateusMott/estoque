@@ -1,4 +1,4 @@
-# Magazine — controle de estoque
+# Estoque — controle de estoque
 
 Primeira etapa do sistema solicitado: Armazenamento → Gerenciamento do Estoque, consulta por código, entrada de produtos, movimentação e baixa por localização. A segunda área permanece como **Em breve**.
 

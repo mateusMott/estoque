@@ -41,13 +41,13 @@ export default function Home() {
         <a
           href="#armazenamento"
           className="brand"
-          aria-label="Magazine — início"
+          aria-label="Estoque — início"
         >
           <span className="brand-mark">
             <Boxes size={25} />
           </span>
           <span>
-            magazine<span className="brand-sub">CONTROLE DE ESTOQUE</span>
+            estoque<span className="brand-sub">CONTROLE DE ESTOQUE</span>
           </span>
         </a>
         <div className="nav-caption">ESPAÇO DE TRABALHO</div>
@@ -202,7 +202,7 @@ export default function Home() {
         </main>
         <footer className="page-footer">
           <span>
-            magazine<span className="footer-divider">/</span>Controle de estoque
+            estoque<span className="footer-divider">/</span>Controle de estoque
           </span>
           <span>Um lugar para cada produto.</span>
         </footer>

@@ -1,15 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #282536;
-  --muted: #827e8e;
-  --purple: #7551ce;
-  --purple-dark: #6040b3;
-  --lavender: #f1ecfb;
-  --line: #eae7ef;
-  --surface: #faf9fc;
-  --green: #26836d;
-  --red: #bc4558;
+  color-scheme: dark;
+  --ink: #f0edf5;
+  --muted: #b1a9bf;
+  --purple: #9470e3;
+  --purple-dark: #ac8bee;
+  --lavender: #30263f;
+  --line: #342e40;
+  --surface: #141219;
+  --green: #7fd1b1;
+  --red: #ef8ea7;
   --radius: 18px;
 }
 * {
@@ -82,7 +83,7 @@ a:focus-visible {
   position: fixed;
   inset: 0 auto 0 0;
   width: 244px;
-  background: #fff;
+  background: #201c28;
   border-right: 1px solid var(--line);
   padding: 36px 23px 22px;
   display: flex;
@@ -155,7 +156,7 @@ a:focus-visible {
 .version-number {
   margin-left: auto;
   font-size: 10px;
-  background: #f5f3f8;
+  background: #211d2a;
   padding: 4px 6px;
   border-radius: 5px;
 }
@@ -173,7 +174,7 @@ a:focus-visible {
   justify-content: space-between;
   border-bottom: 1px solid var(--line);
   padding: 0 44px;
-  background: #ffffffa6;
+  background: #1b1722;
 }
 .breadcrumbs {
   display: flex;
@@ -258,8 +259,8 @@ h1 {
   min-height: 355px;
 }
 .active-module {
-  background: white;
-  border: 1px solid #e2daef;
+  background: #201c28;
+  border: 1px solid #453650;
   box-shadow: 0 5px 22px #39275804;
   transition:
     transform 0.2s,
@@ -298,7 +299,7 @@ h1 {
 }
 .status-pill {
   color: var(--green);
-  background: #edf7f2;
+  background: #1d3831;
 }
 .status-pill > span {
   width: 4px;
@@ -308,7 +309,7 @@ h1 {
 }
 .soon-pill {
   color: #96909f;
-  background: #eeebf2;
+  background: #302a39;
 }
 .module-copy {
   position: relative;
@@ -375,17 +376,17 @@ h1 {
   position: absolute;
   right: -5px;
   bottom: -6px;
-  background: white;
+  background: #201c28;
   padding: 8px;
-  border: 1px solid #e7def4;
+  border: 1px solid #40334e;
   border-radius: 9px;
 }
 .upcoming-module {
-  background: #f5f3f8;
+  background: #211d2a;
   border: 1px dashed #dcd6e5;
 }
 .upcoming-module .module-icon {
-  background: #eae6f0;
+  background: #302a39;
   color: #b5abbe;
 }
 .upcoming-module .module-copy h3 {
@@ -400,7 +401,7 @@ h1 {
 }
 .upcoming-module .module-footer {
   color: #aba2b8;
-  border-color: #e7e1ed;
+  border-color: #3c3346;
 }
 .upcoming-orbit {
   position: absolute;
@@ -635,18 +636,18 @@ h1 {
   background: var(--purple-dark);
 }
 .secondary {
-  background: white;
+  background: #201c28;
   border: 1px solid var(--line);
   color: #71657e;
 }
 .secondary:hover:not(:disabled) {
-  background: #f6f3fb;
+  background: #30263f;
 }
 .icon-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #f6f3fa;
+  background: #30263f;
   border-radius: 8px;
   width: 36px;
   height: 36px;
@@ -662,8 +663,8 @@ h1 {
   align-items: center;
   gap: 12px;
   min-width: 0;
-  background: white;
-  border: 1px solid #e3dce9;
+  background: #201c28;
+  border: 1px solid #493c56;
   border-radius: 10px;
   padding: 6px 7px 6px 17px;
   color: #a497b6;
@@ -687,7 +688,7 @@ h1 {
 }
 .flow-panel {
   padding: 31px;
-  background: white;
+  background: #201c28;
   border: 1px solid var(--line);
   border-radius: 16px;
   margin-top: 26px;
@@ -779,10 +780,10 @@ h1 {
 .field > textarea,
 .field > select {
   width: 100%;
-  border: 1px solid #dfd8e7;
+  border: 1px solid #493c56;
   border-radius: 8px;
   padding: 13px 14px;
-  background: #fff;
+  background: #201c28;
   color: var(--ink);
   font-weight: 400;
   min-height: 45px;
@@ -824,7 +825,7 @@ h1 {
 .inline-note {
   padding: 14px;
   border-radius: 8px;
-  background: #f7f4fb;
+  background: #292134;
   margin-bottom: 24px;
 }
 .entry-tip {
@@ -853,7 +854,7 @@ h1 {
   position: relative;
   text-align: left;
   padding: 23px 18px;
-  background: #fff;
+  background: #201c28;
   border: 1px solid #e8e1ee;
   border-radius: 12px;
   display: flex;
@@ -861,11 +862,11 @@ h1 {
   gap: 9px;
 }
 .destination:hover {
-  background: #faf8fd;
+  background: #2a2234;
 }
 .destination.selected {
   border-color: var(--purple);
-  background: #faf7ff;
+  background: #30253f;
   box-shadow: 0 0 0 1px var(--purple);
 }
 .destination-icon {
@@ -898,15 +899,15 @@ h1 {
 .selected .radio-dot {
   background: var(--purple);
   border-color: var(--purple);
-  color: #fff;
+  color: #201c28;
 }
 .product-summary {
   display: flex;
   gap: 13px;
   align-items: center;
   padding: 17px;
-  background: #faf8fc;
-  border: 1px solid #eee7f4;
+  background: #282130;
+  border: 1px solid #3b3049;
   border-radius: 10px;
   margin-bottom: 25px;
   overflow-wrap: anywhere;
@@ -916,8 +917,8 @@ h1 {
   place-items: center;
   width: 41px;
   height: 43px;
-  border: 1px solid #e8e0f1;
-  background: white;
+  border: 1px solid #493956;
+  background: #201c28;
   border-radius: 8px;
   color: #ad98c6;
   flex-shrink: 0;
@@ -947,19 +948,19 @@ h1 {
 .quantity-control {
   display: flex;
   align-items: center;
-  border: 1px solid #e0d8e9;
+  border: 1px solid #493c56;
   border-radius: 9px;
   width: 186px;
   overflow: hidden;
   height: 49px;
-  background: white;
+  background: #201c28;
 }
 .quantity-control button {
   width: 47px;
   height: 47px;
   display: grid;
   place-items: center;
-  background: #faf8fd;
+  background: #2a2234;
   color: var(--purple);
 }
 .quantity-control input {
@@ -977,9 +978,9 @@ h1 {
 }
 .error-notice {
   padding: 13px 15px;
-  border: 1px solid #f2d5dc;
-  color: #a53a4e;
-  background: #fff6f7;
+  border: 1px solid #794254;
+  color: #f4a2b6;
+  background: #3b232e;
   border-radius: 9px;
   margin: 18px 0;
   font-size: 12px;
@@ -994,7 +995,7 @@ h1 {
   height: 91px;
   display: grid;
   place-items: center;
-  background: #eaf5f0;
+  background: #1d3831;
   color: #51a184;
   border-radius: 50%;
   margin: 0 auto 30px;
@@ -1031,8 +1032,8 @@ fieldset {
 }
 .modal {
   padding: 28px;
-  border: 1px solid #e8dff1;
-  background: white;
+  border: 1px solid #493956;
+  background: #201c28;
   border-radius: 19px;
   width: min(600px, calc(100vw - 32px));
   max-height: calc(100dvh - 40px);
@@ -1201,8 +1202,8 @@ fieldset {
   display: flex;
   align-items: center;
   gap: 16px;
-  background: white;
-  border: 1px solid #e5ddef;
+  background: #201c28;
+  border: 1px solid #40334e;
   border-radius: 13px;
   padding: 21px 23px;
   width: 100%;
@@ -1263,7 +1264,7 @@ fieldset {
   color: #b4a0cb;
   border-radius: 18px;
   margin-bottom: 19px;
-  box-shadow: 0 0 0 8px #f7f4fb;
+  box-shadow: 0 0 0 8px #292134;
 }
 .empty-state h2 {
   font-size: 15px;
@@ -1313,8 +1314,8 @@ fieldset {
   gap: 15px;
 }
 .product-card {
-  background: white;
-  border: 1px solid #e7dfef;
+  background: #201c28;
+  border: 1px solid #40334e;
   border-radius: 13px;
   overflow: hidden;
 }
@@ -1377,9 +1378,9 @@ fieldset {
   color: #a18cae;
 }
 .product-card-bottom {
-  border-top: 1px solid #f0eaf5;
+  border-top: 1px solid #3b3049;
   padding: 14px 23px;
-  background: #fefcfe;
+  background: #231c2c;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1421,12 +1422,12 @@ fieldset {
   display: flex;
   align-items: center;
   gap: 9px;
-  background: #edf7f1;
-  border: 1px solid #d8ebe0;
+  background: #1d3831;
+  border: 1px solid #355f50;
   border-radius: 9px;
   padding: 13px 16px;
   margin-top: 20px;
-  color: #46866a;
+  color: #8cd8b6;
   font-size: 12px;
 }
 @media (max-width: 1100px) {
@@ -1531,14 +1532,14 @@ fieldset {
   align-items: center;
   gap: 7px;
   border-radius: 6px;
-  background: #f2edf9;
+  background: #30263f;
   color: #9678b8;
   padding: 10px;
   font-size: 10px;
   white-space: nowrap;
 }
 .scan-button:hover {
-  background: #e9dff5;
+  background: #49365d;
 }
 .scanner-viewport {
   position: relative;
@@ -1597,4 +1598,83 @@ fieldset {
     padding-left: 12px;
     gap: 8px;
   }
+}
+
+/* Dark defaults apply before hydration and to every inventory flow. */
+.primary {
+  color: #fff;
+}
+.upcoming-module {
+  background: #1d1924;
+}
+.module-copy p,
+.help-strip p,
+.entry-card small,
+.empty-state p,
+.panel-heading p,
+.field > small,
+.product-summary p,
+.product-codes,
+.product-codes small,
+.product-quantity span,
+.search-hint,
+.scanner-help {
+  color: #b3a7c3;
+}
+.upcoming-module .module-copy h3 {
+  color: #a69ab7;
+}
+.upcoming-module .module-copy p {
+  color: #8f839f;
+}
+.empty-state h2,
+.help-strip strong,
+.field,
+.product-summary strong {
+  color: #d9cee7;
+}
+.product-quantity strong {
+  color: #bc9bea;
+}
+.product-card-icon,
+.summary-icon,
+.empty-icon {
+  background: #30263f;
+  color: #b99be1;
+}
+.product-actions button,
+.location-badge,
+.entry-card-arrow {
+  color: #c0a1e3;
+}
+.product-actions .remove-action {
+  color: #ed9db2;
+}
+.field > input,
+.field > textarea,
+.field > select,
+.quantity-control input {
+  background: #19151f;
+  color: #f0edf5;
+}
+.topbar {
+  background: #1b1722;
+}
+.brand-sub,
+.breadcrumbs,
+.workspace-label,
+.page-footer {
+  color: #a89ab8;
+}
+.module-icon {
+  color: #ba9aef;
+}
+.active-module:hover {
+  border-color: #9470e3;
+}
+.warehouse-art {
+  opacity: 0.4;
+}
+.destination strong {
+  color: #e5dceb;
 }
