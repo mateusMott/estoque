@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Boxes, ChevronRight, CircleHelp, Layers3, LockKeyhole, Package, Warehouse } from "lucide-react";
+import { Entry } from "@/components/inventory/entry";
 
 export type Screen = "armazenamento" | "estoque" | "armazenar";
 
@@ -31,7 +32,7 @@ export default function Home() {
             <div className="module-card upcoming-module" aria-disabled="true"><div className="module-top"><span className="module-icon"><Layers3 size={29}/></span><span className="soon-pill"><LockKeyhole size={12}/>Em breve</span></div><div className="upcoming-orbit" aria-hidden="true"><Layers3 size={60} strokeWidth={1}/></div><div className="module-copy"><span className="module-kicker">NOVAS POSSIBILIDADES</span><h3>Mais espaço<br/>para evoluir.</h3><p>Uma nova área chega aqui nas próximas etapas do sistema.</p></div><div className="module-footer">Em breve<span className="muted-arrow"><ArrowRight size={19}/></span></div></div>
           </div>
           <div className="help-strip"><CircleHelp size={20}/><p><strong>Tudo começa pelo armazenamento.</strong> Acesse o gerenciamento para consultar um produto ou registrar uma nova entrada.</p></div>
-        </> : <><button className="back-link" onClick={() => navigate("armazenamento")}><ArrowLeft size={16}/>Voltar ao armazenamento</button><div className="page-intro"><div className="eyebrow">CONTROLE DE PRODUTOS</div><h1>Gerenciamento do Estoque</h1><p>Encontre cada produto. Organize cada entrada.</p></div><p>Em breve</p></>}
+        </> : screen === "armazenar" ? <Entry onBack={()=>navigate("estoque")}/> : <><button className="back-link" onClick={() => navigate("armazenamento")}><ArrowLeft size={16}/>Voltar ao armazenamento</button><div className="page-intro"><div className="eyebrow">CONTROLE DE PRODUTOS</div><h1>Gerenciamento do Estoque</h1><p>Encontre cada produto. Organize cada entrada.</p></div><button className="button primary" onClick={()=>navigate("armazenar")}>Armazenar</button></>}
       </main>
       <footer className="page-footer"><span>magazine<span className="footer-divider">/</span>Controle de estoque</span><span>Um lugar para cada produto.</span></footer>
     </div>
