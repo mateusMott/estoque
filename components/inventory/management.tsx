@@ -21,6 +21,7 @@ import type {
 import { locationLabel, units } from "@/lib/inventory/types";
 import { CodeInput, ErrorNotice, lookup } from "./shared";
 import { ScanButton } from "./scanner";
+import { StreetsCard } from "./streets";
 
 export type ActionSelection = {
   kind: Exclude<OperationKind, "entry">;
@@ -126,6 +127,7 @@ export function Management({
           <ArrowRight size={21} />
         </span>
       </button>
+      <StreetsCard />
       {notice && (
         <div className="success-notice" role="status">
           <CheckCircle2 size={17} />

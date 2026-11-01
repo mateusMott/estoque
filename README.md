@@ -44,3 +44,11 @@ Os testes SQL verificam invariantes usando a migração real. Os testes incluem 
 ## Próximas etapas
 
 Somente o escopo solicitado foi implementado. Novos módulos e integrações aguardam definição. Não há telas de vendas, relatórios, usuários ou funcionalidades futuras ativas.
+
+## Cadastro de ruas
+
+A caixa **Criar rua**, abaixo de **Armazenar**, permite cadastrar o nome e um andar opcional (por exemplo, Térreo ou 2º andar). A lista mostra as ruas cadastradas e seus andares. Os nomes são únicos no estoque e normalizados em maiúsculas, sem espaços extras; para distinguir ruas em andares diferentes, use nomes distintos.
+
+Ao escolher Estoque em uma entrada, reposição ou movimentação, digite ou selecione uma rua previamente cadastrada. O formulário mostra sugestões e o andar da rua escolhida. Ruas inexistentes bloqueiam o avanço e a confirmação, e a validação também é aplicada atomicamente no banco. Mostruário e Salão de Vendas seguem os mesmos fluxos anteriores. Locais antigos são preservados para consulta e saída; novas entradas no estoque exigem cadastro da rua.
+
+A migração `drizzle/0001_low_iron_fist.sql` cria o cadastro e a regra de destino. Em desenvolvimento, aplique-a após a migração inicial usando o mesmo comando D1 local descrito acima, trocando o nome do arquivo. Não reaplique migrações já executadas. A publicação aplica a migração nova no banco hospedado.

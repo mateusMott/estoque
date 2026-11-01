@@ -1678,3 +1678,62 @@ fieldset {
 .destination strong {
   color: #e5dceb;
 }
+.streets-card {
+  margin-top: 14px;
+}
+.optional-label {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 400;
+}
+.registered-streets {
+  margin-top: 26px;
+  padding-top: 23px;
+  border-top: 1px solid var(--line);
+}
+.registered-streets h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+.registered-streets p {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.registered-streets ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 220px;
+  overflow: auto;
+}
+.registered-streets li {
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.registered-streets li strong {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.registered-streets li span {
+  font-size: 11px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+  min-width: 0;
+  text-align: right;
+}
+.field > .street-error {
+  color: #f4a2b6;
+}
+.field > input[aria-invalid="true"] {
+  border-color: #ad5a70;
+}
+.street-retry {
+  margin-top: 10px;
+}

@@ -18,6 +18,8 @@ import {
   type Operation,
   type ProductResult,
 } from "@/lib/inventory/types";
+import { useStreets } from "@/lib/inventory/streets-client";
+import { normalizeStreet } from "@/lib/inventory/streets";
 
 export async function lookup(
   code: string,
@@ -209,20 +211,74 @@ export function StreetInput({
   value: string;
   onChange: (v: string) => void;
 }) {
+  const { streets, loading, error, reload } = useStreets();
+  const listId = useId(),
+    helpId = useId();
+  const ref = useRef<HTMLInputElement>(null);
+  const match = streets.find(
+    (street) => street.name === normalizeStreet(value),
+  );
+  const invalid = !!value.trim() && !match && !loading && !error;
+  const message = loading
+    ? "Carregando ruas cadastradas…"
+    : error
+      ? error
+      : !value.trim()
+        ? ""
+        : !match
+          ? "Rua inexistente. Cadastre esta rua em Criar rua antes de continuar."
+          : "";
+  useEffect(() => {
+    ref.current?.setCustomValidity(message);
+  }, [message]);
   return (
-    <label className="field">
-      Rua do estoque
-      <input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="Ex.: A01, B02 ou Corredor 3"
-        maxLength={60}
-        required
-        pattern="[^:]+"
-        autoFocus
-      />
-      <small>Informe o corredor em que o produto será armazenado.</small>
-    </label>
+    <div>
+      <label className="field">
+        Rua do estoque
+        <input
+          ref={ref}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Digite ou selecione uma rua cadastrada"
+          list={listId}
+          aria-describedby={helpId}
+          aria-invalid={invalid || !!error}
+          autoComplete="off"
+          maxLength={60}
+          required
+          pattern="[^:]+"
+          autoFocus
+        />
+        <datalist id={listId}>
+          {streets.map((street) => (
+            <option key={street.name} value={street.name}>
+              {street.floor || "Andar não informado"}
+            </option>
+          ))}
+        </datalist>
+        <small
+          id={helpId}
+          className={invalid || error ? "street-error" : ""}
+          aria-live="polite"
+        >
+          {message ||
+            (match
+              ? `Rua cadastrada${match.floor ? ` · ${match.floor}` : ""}`
+              : streets.length
+                ? "Selecione uma das sugestões ou digite o nome exato da rua."
+                : "Nenhuma rua cadastrada. Volte ao gerenciamento e use Criar rua.")}
+        </small>
+      </label>
+      {error && (
+        <button
+          type="button"
+          className="button secondary street-retry"
+          onClick={reload}
+        >
+          Tentar novamente
+        </button>
+      )}
+    </div>
   );
 }
 export function Quantity({
