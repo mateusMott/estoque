@@ -103,6 +103,14 @@ export async function POST(request: Request) {
         },
         409,
       );
+    if (message.includes("UNKNOWN_STREET"))
+      return json(
+        {
+          error:
+            "Rua inexistente. Cadastre esta rua em Criar rua antes de armazenar produtos.",
+        },
+        409,
+      );
     if (message.includes("ZERO_STOCK"))
       return json(
         {

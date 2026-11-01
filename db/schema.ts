@@ -7,6 +7,11 @@ import {
   check,
 } from "drizzle-orm/sqlite-core";
 
+export const streets = sqliteTable("streets", {
+  name: text("name").primaryKey(),
+  floor: text("floor"),
+});
+
 export const products = sqliteTable("products", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),

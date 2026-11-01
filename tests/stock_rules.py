@@ -7,6 +7,7 @@ class StockRules(unittest.TestCase):
         self.db.execute('PRAGMA foreign_keys = ON')
         for file in sorted(glob.glob('drizzle/*.sql')):
             with open(file) as migration: self.db.executescript(migration.read())
+        self.db.execute("INSERT INTO streets (name,floor) VALUES ('A',NULL)")
         self.db.execute("INSERT INTO products VALUES ('p','TV','001234','00456')")
         self.db.execute("INSERT INTO codes VALUES ('001234','p')")
         self.db.execute("INSERT INTO codes VALUES ('00456','p')")
@@ -51,5 +52,32 @@ class StockRules(unittest.TestCase):
         self.assertEqual(self.db.execute("SELECT product_id FROM codes WHERE code='001234'").fetchone()[0],'p')
         self.db.execute("INSERT INTO products VALUES ('q','Fogão','987','001234')")
         with self.assertRaises(sqlite3.IntegrityError): self.db.execute("INSERT INTO codes VALUES ('001234','q')")
+
+    def test_only_registered_streets_accept_stock(self):
+        for kind in ['entry', 'add', 'move']:
+            self.op('entry', 2, destination='salao')
+            before=self.db.execute('SELECT COUNT(*) FROM operations').fetchone()[0]
+            with self.assertRaisesRegex(sqlite3.IntegrityError, 'UNKNOWN_STREET'):
+                self.op(kind, 1, source='salao' if kind=='move' else None, destination='estoque:RUA 4')
+            self.assertEqual(self.balance('estoque:RUA 4'),0)
+            self.assertEqual(self.db.execute('SELECT COUNT(*) FROM operations').fetchone()[0],before)
+    def test_street_with_optional_floor_and_registered_destination(self):
+        self.db.execute("INSERT INTO streets (name,floor) VALUES ('RUA 1','2º andar')")
+        self.db.execute("INSERT INTO streets (name,floor) VALUES ('RUA 2',NULL)")
+        self.op('entry',3,destination='estoque:RUA 1')
+        self.op('move',2,source='estoque:RUA 1',destination='estoque:RUA 2')
+        self.assertEqual((self.balance('estoque:RUA 1'),self.balance('estoque:RUA 2')),(1,2))
+        self.assertEqual(self.db.execute("SELECT floor FROM streets WHERE name='RUA 1'").fetchone()[0],'2º andar')
+        with self.assertRaises(sqlite3.IntegrityError):
+            self.db.execute("INSERT INTO streets (name,floor) VALUES ('RUA 1','3º andar')")
+    def test_unregistered_street_rolls_back_new_product_batch(self):
+        self.db.commit()
+        with self.assertRaisesRegex(sqlite3.IntegrityError, 'UNKNOWN_STREET'):
+            with self.db:
+                self.db.execute("INSERT INTO products VALUES ('new','Fogão','987','654')")
+                self.db.execute("INSERT INTO codes VALUES ('987','new')")
+                self.db.execute("INSERT INTO operations (id,product_id,kind,quantity,destination,payload) VALUES ('invalid-entry','new','entry',1,'estoque:RUA 4','{}')")
+        self.assertIsNone(self.db.execute("SELECT id FROM products WHERE id='new'").fetchone())
+        self.assertIsNone(self.db.execute("SELECT code FROM codes WHERE code='987'").fetchone())
 
 if __name__ == '__main__': unittest.main()
