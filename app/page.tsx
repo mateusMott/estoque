@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Boxes, ChevronRight, CircleHelp, Layers3, LockKeyhole, Package, Warehouse } from "lucide-react";
 import { Entry } from "@/components/inventory/entry";
 import { Management } from "@/components/inventory/management";
+import { ProductAction } from "@/components/inventory/action";
 
 export type Screen = "armazenamento" | "estoque" | "armazenar";
 
@@ -33,7 +34,7 @@ export default function Home() {
             <div className="module-card upcoming-module" aria-disabled="true"><div className="module-top"><span className="module-icon"><Layers3 size={29}/></span><span className="soon-pill"><LockKeyhole size={12}/>Em breve</span></div><div className="upcoming-orbit" aria-hidden="true"><Layers3 size={60} strokeWidth={1}/></div><div className="module-copy"><span className="module-kicker">NOVAS POSSIBILIDADES</span><h3>Mais espaço<br/>para evoluir.</h3><p>Uma nova área chega aqui nas próximas etapas do sistema.</p></div><div className="module-footer">Em breve<span className="muted-arrow"><ArrowRight size={19}/></span></div></div>
           </div>
           <div className="help-strip"><CircleHelp size={20}/><p><strong>Tudo começa pelo armazenamento.</strong> Acesse o gerenciamento para consultar um produto ou registrar uma nova entrada.</p></div>
-        </> : screen === "armazenar" ? <Entry onBack={()=>navigate("estoque")}/> : <Management onBack={()=>navigate("armazenamento")} onEntry={()=>navigate("armazenar")}/>}
+        </> : screen === "armazenar" ? <Entry onBack={()=>navigate("estoque")}/> : <Management onBack={()=>navigate("armazenamento")} onEntry={()=>navigate("armazenar")} renderAction={(selection,onClose,onSaved)=><ProductAction selection={selection} onClose={onClose} onSaved={onSaved}/>}/>}
       </main>
       <footer className="page-footer"><span>magazine<span className="footer-divider">/</span>Controle de estoque</span><span>Um lugar para cada produto.</span></footer>
     </div>
