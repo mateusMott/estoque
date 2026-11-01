@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, ArrowRightLeft, Boxes, Info, MapPin, PackageMinu
 import type { Balance, OperationKind, Product, ProductResult } from "@/lib/inventory/types";
 import { locationLabel, units } from "@/lib/inventory/types";
 import { CodeInput, ErrorNotice, lookup } from "./shared";
+import { ScanButton } from "./scanner";
 
 export type ActionSelection = {kind:Exclude<OperationKind,"entry">;product:Product;balance:Balance};
 export function Management({onBack,onEntry,renderAction}:{onBack:()=>void;onEntry:()=>void;renderAction?:(selection:ActionSelection,close:()=>void,saved:()=>void)=>React.ReactNode}) {
@@ -19,7 +20,7 @@ export function Management({onBack,onEntry,renderAction}:{onBack:()=>void;onEntr
   return <>
     <button className="back-link" onClick={onBack}><ArrowLeft size={16}/>Voltar ao armazenamento</button>
     <div className="page-intro"><div className="eyebrow">CONTROLE DE PRODUTOS</div><h1>Gerenciamento do Estoque<span className="title-dot">.</span></h1><p>Consulte seus produtos ou registre uma nova entrada.</p></div>
-    <section className="search-panel" aria-label="Consulta de produtos"><label className="search-label">Encontre um produto</label><CodeInput value={code} onChange={v=>{setCode(v);sequence.current++;setResult(null);setBusy(false);setError("");setNotice("");}} onSubmit={()=>{setNotice("");search();}} busy={busy}/><div className="search-hint"><Info size={13}/>A pesquisa mostra somente produtos com unidades disponíveis.</div></section>
+    <section className="search-panel" aria-label="Consulta de produtos"><label className="search-label">Encontre um produto</label><CodeInput value={code} onChange={v=>{setCode(v);sequence.current++;setResult(null);setBusy(false);setError("");setNotice("");}} onSubmit={()=>{setNotice("");search();}} busy={busy} scanner={<ScanButton disabled={busy} onResult={value=>{setCode(value);setNotice("");search(value);}}/>}/><div className="search-hint"><Info size={13}/>A pesquisa mostra somente produtos com unidades disponíveis.</div></section>
     <button className="entry-card" onClick={onEntry}><span className="entry-card-icon"><PackagePlus size={26}/></span><span><strong>Armazenar</strong><small>Registre a chegada de um produto novo ou reponha um estoque zerado.</small></span><span className="entry-card-arrow"><ArrowRight size={21}/></span></button>
     {notice&&<div className="success-notice" role="status"><CheckCircle2 size={17}/>{notice}</div>}
     <ErrorNotice>{error}</ErrorNotice>
