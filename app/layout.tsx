@@ -3,7 +3,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Magazine | Controle de estoque",
-  description: "Organize a entrada, a localização e a movimentação dos produtos da sua loja.",
+  description:
+    "Organize a entrada, a localização e a movimentação dos produtos da sua loja.",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",

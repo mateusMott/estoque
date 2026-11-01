@@ -6,7 +6,7 @@ class StockRules(unittest.TestCase):
         self.db = sqlite3.connect(':memory:')
         self.db.execute('PRAGMA foreign_keys = ON')
         for file in sorted(glob.glob('drizzle/*.sql')):
-            self.db.executescript(open(file).read())
+            with open(file) as migration: self.db.executescript(migration.read())
         self.db.execute("INSERT INTO products VALUES ('p','TV','001234','00456')")
         self.db.execute("INSERT INTO codes VALUES ('001234','p')")
         self.db.execute("INSERT INTO codes VALUES ('00456','p')")

@@ -3,32 +3,373 @@ import { useState } from "react";
 import { ArrowLeft, Check, CircleCheck, Info, PackagePlus } from "lucide-react";
 import type { Destination, Product } from "@/lib/inventory/types";
 import { locationKey, locationLabel, units } from "@/lib/inventory/types";
-import { BusyLabel, CodeInput, Destinations, ErrorNotice, lookup, NextButton, ProductSummary, Quantity, StreetInput, useOperation } from "./shared";
+import {
+  BusyLabel,
+  CodeInput,
+  Destinations,
+  ErrorNotice,
+  lookup,
+  NextButton,
+  ProductSummary,
+  Quantity,
+  StreetInput,
+  useOperation,
+} from "./shared";
 import { ScanButton } from "./scanner";
+import { codeSchema } from "@/lib/inventory/validation";
 
-export function Entry({onBack}:{onBack:()=>void}) {
-  const [step,setStep]=useState(0),[code,setCode]=useState(""),[product,setProduct]=useState<Product|null>(null),[isNew,setIsNew]=useState(false),[lookupBusy,setLookupBusy]=useState(false),[lookupError,setLookupError]=useState("");
-  const [name,setName]=useState(""),[barcode,setBarcode]=useState(""),[gemco,setGemco]=useState("");
-  const [destination,setDestination]=useState<Destination|"">(""),[street,setStreet]=useState(""),[quantity,setQuantity]=useState("1"),[complete,setComplete]=useState(false);
-  const operation=useOperation();
-  async function identify(value=code){
-    setLookupBusy(true);setLookupError("");setIsNew(false);
-    try {const data=await lookup(value,true);setProduct(data.product);if(data.product){setName(data.product.name);setBarcode(data.product.barcode);setGemco(data.product.gemco);setStep(1);}else{setIsNew(true);setName("");setBarcode(value.trim());setGemco("");}}
-    catch(e){setLookupError((e as Error).message);}finally{setLookupBusy(false);}
+export function Entry({ onBack }: { onBack: () => void }) {
+  const [step, setStep] = useState(0),
+    [code, setCode] = useState(""),
+    [product, setProduct] = useState<Product | null>(null),
+    [isNew, setIsNew] = useState(false),
+    [lookupBusy, setLookupBusy] = useState(false),
+    [lookupError, setLookupError] = useState("");
+  const [name, setName] = useState(""),
+    [barcode, setBarcode] = useState(""),
+    [gemco, setGemco] = useState("");
+  const [destination, setDestination] = useState<Destination | "">(""),
+    [street, setStreet] = useState(""),
+    [quantity, setQuantity] = useState("1"),
+    [complete, setComplete] = useState(false);
+  const operation = useOperation();
+  async function identify(value = code) {
+    setLookupBusy(true);
+    setLookupError("");
+    setIsNew(false);
+    try {
+      const data = await lookup(value, true);
+      setProduct(data.product);
+      if (data.product) {
+        setName(data.product.name);
+        setBarcode(data.product.barcode);
+        setGemco(data.product.gemco);
+        setStep(1);
+      } else {
+        setIsNew(true);
+        setName("");
+        setBarcode(value.trim());
+        setGemco("");
+      }
+    } catch (e) {
+      setLookupError((e as Error).message);
+    } finally {
+      setLookupBusy(false);
+    }
   }
-  const key=destination?locationKey(destination,street):"";
-  function confirm(){operation.submit({kind:"entry",quantity:Number(quantity),destination:key,...(product?{productId:product.id}:{product:{name:name.trim(),barcode:barcode.trim(),gemco:gemco.trim()}})},()=>setComplete(true));}
-  if(complete)return <div className="success-panel"><span className="success-icon"><CircleCheck size={42}/></span><div className="eyebrow">ENTRADA CONFIRMADA</div><h1>Produto no lugar certo.</h1><p><strong>{units(Number(quantity))}</strong> de {name} armazenadas em<br/><strong>{locationLabel(key)}</strong>.</p><div className="success-actions"><button className="button primary" onClick={()=>{setStep(0);setCode("");setProduct(null);setIsNew(false);setDestination("");setStreet("");setQuantity("1");setComplete(false);operation.setError("");}}>Armazenar outro produto<PackagePlus size={18}/></button><button className="button secondary" onClick={onBack}>Voltar ao gerenciamento</button></div></div>;
-  return <>
-    <button className="back-link" onClick={onBack} disabled={operation.busy}><ArrowLeft size={16}/>Voltar ao gerenciamento</button>
-    <div className="page-intro"><div className="eyebrow">ENTRADA DE PRODUTOS</div><h1>Armazenar<span className="title-dot">.</span></h1><p>Da chegada ao lugar certo, em poucos passos.</p></div>
-    <ol className="stepper" aria-label="Etapas da entrada">{["Identificar","Destino",...(destination==="estoque"?["Rua"]:[]),"Quantidade"].map((label,index)=>{const current=step===3 ? (destination==="estoque"?3:2) : step;return <li key={label} className={index===current?"current":index<current?"done":""} aria-current={index===current?"step":undefined}><span>{index<current?<Check size={14}/>:index+1}</span>{label}</li>;})}</ol>
-    <section className="flow-panel">
-      {step===0&&<><div className="panel-heading"><span className="panel-icon"><PackagePlus size={23}/></span><div><h2>Qual produto vamos armazenar?</h2><p>Use o código de barras ou o código Gemco para identificar.</p></div></div><CodeInput value={code} onChange={v=>{setCode(v);setIsNew(false);setLookupError("");}} onSubmit={()=>identify()} busy={lookupBusy} entry scanner={<ScanButton disabled={lookupBusy} onResult={value=>{setCode(value);identify(value);}}/>}/><ErrorNotice>{lookupError}</ErrorNotice>
-      {isNew?<form onSubmit={e=>{e.preventDefault();if(code.trim()!==barcode.trim()&&code.trim()!==gemco.trim()){setLookupError("O código identificado deve estar no campo de barras ou Gemco.");return;}setLookupError("");setStep(1);}} className="new-product"><div className="inline-note"><Info size={18}/><span>Primeira entrada deste produto. Complete os dados para identificá-lo nas próximas consultas.</span></div><label className="field">Nome do produto<input value={name} onChange={e=>setName(e.target.value)} placeholder="Ex.: Smart TV 50 polegadas" minLength={2} maxLength={160} required/></label><div className="form-grid"><label className="field">Código de barras<input value={barcode} onChange={e=>setBarcode(e.target.value)} maxLength={80} pattern="[A-Za-z0-9._/\-]+" required/></label><label className="field">Código Gemco<input value={gemco} onChange={e=>setGemco(e.target.value)} placeholder="Informe o código Gemco" maxLength={80} pattern="[A-Za-z0-9._/\-]+" required/></label></div><div className="form-footer"><span>Os códigos são mantidos com os zeros iniciais.</span><NextButton/></div></form>:<div className="entry-tip"><Info size={17}/><p>Produtos novos e produtos com estoque zerado devem entrar por aqui.</p></div>}</>}
-      {step===1&&<form onSubmit={e=>{e.preventDefault();if(destination)setStep(destination==="estoque"?2:3);}}><div className="panel-heading"><div><h2>Para onde vai o produto?</h2><p>Selecione o local de armazenamento.</p></div></div><ProductSummary name={name} barcode={barcode} gemco={gemco}/><Destinations value={destination} onChange={setDestination}/><div className="form-footer"><button type="button" className="button secondary" onClick={()=>setStep(0)}>Voltar</button><NextButton disabled={!destination}/></div></form>}
-      {step===2&&<form onSubmit={e=>{e.preventDefault();if(street.trim())setStep(3);}}><div className="panel-heading"><div><h2>Em qual rua do estoque?</h2><p>Uma localização precisa facilita a próxima consulta.</p></div></div><ProductSummary name={name} barcode={barcode} gemco={gemco}/><div className="street-field"><StreetInput value={street} onChange={setStreet}/></div><div className="form-footer"><button type="button" className="button secondary" onClick={()=>setStep(1)}>Voltar</button><NextButton disabled={!street.trim()}/></div></form>}
-      {step===3&&<form onSubmit={e=>{e.preventDefault();confirm();}}><div className="panel-heading"><div><h2>Quantas unidades chegaram?</h2><p>Confira os dados e confirme a entrada.</p></div></div><ProductSummary name={name} barcode={barcode} gemco={gemco} location={key}/><fieldset disabled={operation.busy}><Quantity value={quantity} onChange={setQuantity}/></fieldset><ErrorNotice>{operation.error}</ErrorNotice><div className="form-footer"><button type="button" className="button secondary" disabled={operation.busy} onClick={()=>setStep(destination==="estoque"?2:1)}>Voltar</button><button className="button primary" type="submit" disabled={operation.busy}><BusyLabel busy={operation.busy}>Confirmar armazenamento<Check size={17}/></BusyLabel></button></div></form>}
-    </section>
-  </>;
+  const key = destination ? locationKey(destination, street) : "";
+  function confirm() {
+    operation.submit(
+      {
+        kind: "entry",
+        quantity: Number(quantity),
+        destination: key,
+        ...(product
+          ? { productId: product.id }
+          : {
+              product: {
+                name: name.trim(),
+                barcode: barcode.trim(),
+                gemco: gemco.trim(),
+              },
+            }),
+      },
+      () => setComplete(true),
+    );
+  }
+  if (complete)
+    return (
+      <div className="success-panel">
+        <span className="success-icon">
+          <CircleCheck size={42} />
+        </span>
+        <div className="eyebrow">ENTRADA CONFIRMADA</div>
+        <h1>Produto no lugar certo.</h1>
+        <p>
+          <strong>{units(Number(quantity))}</strong> de {name} armazenadas em
+          <br />
+          <strong>{locationLabel(key)}</strong>.
+        </p>
+        <div className="success-actions">
+          <button
+            className="button primary"
+            onClick={() => {
+              setStep(0);
+              setCode("");
+              setProduct(null);
+              setIsNew(false);
+              setDestination("");
+              setStreet("");
+              setQuantity("1");
+              setComplete(false);
+              operation.setError("");
+            }}
+          >
+            Armazenar outro produto
+            <PackagePlus size={18} />
+          </button>
+          <button className="button secondary" onClick={onBack}>
+            Voltar ao gerenciamento
+          </button>
+        </div>
+      </div>
+    );
+  return (
+    <>
+      <button className="back-link" onClick={onBack} disabled={operation.busy}>
+        <ArrowLeft size={16} />
+        Voltar ao gerenciamento
+      </button>
+      <div className="page-intro">
+        <div className="eyebrow">ENTRADA DE PRODUTOS</div>
+        <h1>
+          Armazenar<span className="title-dot">.</span>
+        </h1>
+        <p>Da chegada ao lugar certo, em poucos passos.</p>
+      </div>
+      <ol className="stepper" aria-label="Etapas da entrada">
+        {[
+          "Identificar",
+          "Destino",
+          ...(destination === "estoque" ? ["Rua"] : []),
+          "Quantidade",
+        ].map((label, index) => {
+          const current =
+            step === 3 ? (destination === "estoque" ? 3 : 2) : step;
+          return (
+            <li
+              key={label}
+              className={
+                index === current ? "current" : index < current ? "done" : ""
+              }
+              aria-current={index === current ? "step" : undefined}
+            >
+              <span>{index < current ? <Check size={14} /> : index + 1}</span>
+              {label}
+            </li>
+          );
+        })}
+      </ol>
+      <section className="flow-panel">
+        {step === 0 && (
+          <>
+            <div className="panel-heading">
+              <span className="panel-icon">
+                <PackagePlus size={23} />
+              </span>
+              <div>
+                <h2>Qual produto vamos armazenar?</h2>
+                <p>
+                  Use o código de barras ou o código Gemco para identificar.
+                </p>
+              </div>
+            </div>
+            <CodeInput
+              value={code}
+              onChange={(v) => {
+                setCode(v);
+                setIsNew(false);
+                setLookupError("");
+              }}
+              onSubmit={() => identify()}
+              busy={lookupBusy}
+              entry
+              scanner={
+                <ScanButton
+                  disabled={lookupBusy}
+                  onResult={(value) => {
+                    setCode(value);
+                    identify(value);
+                  }}
+                />
+              }
+            />
+            <ErrorNotice>{lookupError}</ErrorNotice>
+            {isNew ? (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (
+                    !codeSchema.safeParse(barcode).success ||
+                    !codeSchema.safeParse(gemco).success ||
+                    name.trim().length < 2
+                  ) {
+                    setLookupError(
+                      "Informe um nome e códigos válidos (letras, números, ponto, hífen, barra ou sublinhado).",
+                    );
+                    return;
+                  }
+                  if (
+                    code.trim() !== barcode.trim() &&
+                    code.trim() !== gemco.trim()
+                  ) {
+                    setLookupError(
+                      "O código identificado deve estar no campo de barras ou Gemco.",
+                    );
+                    return;
+                  }
+                  setLookupError("");
+                  setStep(1);
+                }}
+                className="new-product"
+              >
+                <div className="inline-note">
+                  <Info size={18} />
+                  <span>
+                    Primeira entrada deste produto. Complete os dados para
+                    identificá-lo nas próximas consultas.
+                  </span>
+                </div>
+                <label className="field">
+                  Nome do produto
+                  <input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Ex.: Smart TV 50 polegadas"
+                    minLength={2}
+                    maxLength={160}
+                    required
+                  />
+                </label>
+                <div className="form-grid">
+                  <label className="field">
+                    Código de barras
+                    <input
+                      value={barcode}
+                      onChange={(e) => setBarcode(e.target.value)}
+                      maxLength={80}
+                      required
+                    />
+                  </label>
+                  <label className="field">
+                    Código Gemco
+                    <input
+                      value={gemco}
+                      onChange={(e) => setGemco(e.target.value)}
+                      placeholder="Informe o código Gemco"
+                      maxLength={80}
+                      required
+                    />
+                  </label>
+                </div>
+                <div className="form-footer">
+                  <span>Os códigos são mantidos com os zeros iniciais.</span>
+                  <NextButton />
+                </div>
+              </form>
+            ) : (
+              <div className="entry-tip">
+                <Info size={17} />
+                <p>
+                  Produtos novos e produtos com estoque zerado devem entrar por
+                  aqui.
+                </p>
+              </div>
+            )}
+          </>
+        )}
+        {step === 1 && (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (destination) setStep(destination === "estoque" ? 2 : 3);
+            }}
+          >
+            <div className="panel-heading">
+              <div>
+                <h2>Para onde vai o produto?</h2>
+                <p>Selecione o local de armazenamento.</p>
+              </div>
+            </div>
+            <ProductSummary name={name} barcode={barcode} gemco={gemco} />
+            <Destinations value={destination} onChange={setDestination} />
+            <div className="form-footer">
+              <button
+                type="button"
+                className="button secondary"
+                onClick={() => setStep(0)}
+              >
+                Voltar
+              </button>
+              <NextButton disabled={!destination} />
+            </div>
+          </form>
+        )}
+        {step === 2 && (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (street.trim()) setStep(3);
+            }}
+          >
+            <div className="panel-heading">
+              <div>
+                <h2>Em qual rua do estoque?</h2>
+                <p>Uma localização precisa facilita a próxima consulta.</p>
+              </div>
+            </div>
+            <ProductSummary name={name} barcode={barcode} gemco={gemco} />
+            <div className="street-field">
+              <StreetInput value={street} onChange={setStreet} />
+            </div>
+            <div className="form-footer">
+              <button
+                type="button"
+                className="button secondary"
+                onClick={() => setStep(1)}
+              >
+                Voltar
+              </button>
+              <NextButton disabled={!street.trim()} />
+            </div>
+          </form>
+        )}
+        {step === 3 && (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              confirm();
+            }}
+          >
+            <div className="panel-heading">
+              <div>
+                <h2>Quantas unidades chegaram?</h2>
+                <p>Confira os dados e confirme a entrada.</p>
+              </div>
+            </div>
+            <ProductSummary
+              name={name}
+              barcode={barcode}
+              gemco={gemco}
+              location={key}
+            />
+            <fieldset disabled={operation.busy}>
+              <Quantity value={quantity} onChange={setQuantity} />
+            </fieldset>
+            <ErrorNotice>{operation.error}</ErrorNotice>
+            <div className="form-footer">
+              <button
+                type="button"
+                className="button secondary"
+                disabled={operation.busy}
+                onClick={() => setStep(destination === "estoque" ? 2 : 1)}
+              >
+                Voltar
+              </button>
+              <button
+                className="button primary"
+                type="submit"
+                disabled={operation.busy}
+              >
+                <BusyLabel busy={operation.busy}>
+                  Confirmar armazenamento
+                  <Check size={17} />
+                </BusyLabel>
+              </button>
+            </div>
+          </form>
+        )}
+      </section>
+    </>
+  );
 }
